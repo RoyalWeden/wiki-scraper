@@ -9,7 +9,10 @@ class Scraper:
             Args:
                 website (str): Wikipedia website [if none inputted, uses default websites].
         """
-        self.website = website
+        if "http" in website:
+            self.website = website
+        else:
+            self.website = "https://en.wikipedia.org/wiki/" + website
         self.wiki_request = requests.get(self.website)
         self.wiki_text = self.wiki_request.text
 
