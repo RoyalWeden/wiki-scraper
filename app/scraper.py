@@ -128,7 +128,7 @@ class Scraper:
                 frequency_dict[word] = 1
         frequency_dict = dict(sorted(frequency_dict.items(), key=lambda x: -x[1]))
 
-        return list(frequency_dict)[:5]
+        return list(frequency_dict)
 
 # print("MAIN TITLE:\t" + str(get_main_title()))
 # print("TITLES:\t" + str(get_titles()))
