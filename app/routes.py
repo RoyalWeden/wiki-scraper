@@ -9,13 +9,20 @@ def home():
     global website_scraper
     if request.method == 'POST':
         website_scraper = Scraper(request.form['search'])
-        return redirect('/scraped-info')
+        return redirect('/info')
     return render_template('home.html')
 
-@app.route('/scraped-info')
+@app.route('/info')
 def scraped():
-    return """
-    <h1>Main Title:</h1> <p>{}</p>
-    <h1>Sub Titles:</h1> <p>{}</p>
-    <h1>Frequent Words in 'History' Sub Title:</h1> <p>{}</p>
-    """.format(website_scraper.get_main_title(), website_scraper.get_titles(), website_scraper.find_most_frequent_words('History'))
+    if website_scraper == None:
+        return redirect('/')
+    scraped_title = website_scraper.get_main_title() + " | Wiki Scraper"
+    subtitles = website_scraper.get_titles()
+    return render_template('scraped.html',
+                            scraped_title=scraped_title,
+                            subtitles=subtitles)
+    # return """
+    # <h1>Main Title:</h1> <p>{}</p>
+    # <h1>Sub Titles:</h1> <p>{}</p>
+    # <h1>Frequent Words in 'History' Sub Title:</h1> <p>{}</p>
+    # """.format(website_scraper.get_main_title(), website_scraper.get_titles(), website_scraper.find_most_frequent_words('History'))
