@@ -18,11 +18,8 @@ def scraped():
         return redirect('/')
     scraped_title = website_scraper.get_main_title() + " | Wiki Scraper"
     subtitles = website_scraper.get_titles()
+    freqwords_per_subtitle = {subtitle: website_scraper.find_most_frequent_words(subtitle) for subtitle in subtitles}
     return render_template('scraped.html',
                             scraped_title=scraped_title,
-                            subtitles=subtitles)
-    # return """
-    # <h1>Main Title:</h1> <p>{}</p>
-    # <h1>Sub Titles:</h1> <p>{}</p>
-    # <h1>Frequent Words in 'History' Sub Title:</h1> <p>{}</p>
-    # """.format(website_scraper.get_main_title(), website_scraper.get_titles(), website_scraper.find_most_frequent_words('History'))
+                            subtitles=subtitles,
+                            freqwords_per_subtitle=freqwords_per_subtitle)
