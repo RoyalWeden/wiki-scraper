@@ -1,5 +1,5 @@
 from app import app, config
-from flask import render_template, redirect, url_for, session, request
+from flask import render_template, redirect, url_for, session, request, jsonify
 from app.scraper import Scraper
 
 website_scraper: Scraper = None
@@ -23,3 +23,9 @@ def scraped():
                             scraped_title=scraped_title,
                             subtitles=subtitles,
                             freqwords_per_subtitle=freqwords_per_subtitle)
+
+@app.route('/<wiki>')
+def quick_scraped(wiki):
+    global website_scraper
+    website_scraper = Scraper(wiki)
+    return redirect('/info')
