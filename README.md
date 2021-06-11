@@ -31,7 +31,7 @@ Documentation work in progress...
 * **Success Response:**
 
   * **Code:** 200 <br />
-    **Content:** `{ title : "Dog", subtitles : [ "Taxonomy", "Evolution", "Domestication", ... ], freq_words : { "Anatomy" : [ "dogs", "type", "types", ... ], ... } }`
+    **Content:** `{ title : "Dog", subtitles : [ "Taxonomy", "Evolution", "Domestication", ... ], freq_words : { "Anatomy" : [ "dogs", "type", "types", ... ], ... }, hyperlinks : { "Anatomy" : [ "/wiki/Dog_anatomy", "/wiki/File:Dog_anatomy_lateral_skeleton_view.jpg", "/wiki/File:Dog_anatomy_lateral_skeleton_view.jpg", ... ], ... } }`
  
 * **Error Response:**
 
