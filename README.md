@@ -45,6 +45,7 @@ Documentation work in progress...
 
 * **Sample Call:**
 
+  JavaScript:
   ```javascript
     $.ajax({
       url: "/api/v1/wiki?phrase=Dog",
@@ -56,10 +57,11 @@ Documentation work in progress...
     });
   ```
   
+  Python:
   ```python
-  import requests
-  r = requests.get("https://wiki-scraper-vsfs.herokuapp.com/api/v1/wiki?phrase=Dog")
-  r.json()
+    import requests
+    r = requests.get("https://wiki-scraper-vsfs.herokuapp.com/api/v1/wiki?phrase=Dog")
+    r.json()
   ```
 
 
