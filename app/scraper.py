@@ -9,10 +9,10 @@ class Scraper:
             Args:
                 website (str): Wikipedia website [if none inputted, uses default websites].
         """
-        if "http" in website:
+        if 'http' in website:
             self.website = website
         else:
-            self.website = "https://en.wikipedia.org/wiki/" + website
+            self.website = 'https://en.wikipedia.org/wiki/' + website
         self.wiki_request = requests.get(self.website)
         self.wiki_text = self.wiki_request.text
 
@@ -37,7 +37,7 @@ class Scraper:
         wiki_titles = []
         while self.wiki_text.find("<span class=\"toctext\">".format(which_title), titles_find_start_ind) != -1:
             titles_find_start_ind = self.wiki_text.find("<span class=\"toctext\">".format(which_title), titles_find_start_ind) + len("<span class=\"toctext\">".format(which_title))
-            wiki_titles.append(str(self.wiki_text[titles_find_start_ind:self.wiki_text.find("</span>", titles_find_start_ind)]))
+            wiki_titles.append(str(self.wiki_text[titles_find_start_ind:self.wiki_text.find('</span>', titles_find_start_ind)]))
             which_title += 1
         return wiki_titles
 
@@ -51,39 +51,39 @@ class Scraper:
                  freq_words (list): List of the five most frequent words
         """
         section_start = self.wiki_text.find("<span class=\"mw-headline\" id=\"{0}\">{0}".format(section))
-        paragraph_start = self.wiki_text.find("<p>", section_start) + len("<p>")
-        paragraph_end = self.wiki_text.find("<h", paragraph_start)
+        paragraph_start = self.wiki_text.find('<p>', section_start) + len('<p>')
+        paragraph_end = self.wiki_text.find('<h2', paragraph_start)
         paragraph = self.wiki_text[paragraph_start:paragraph_end]
         count = 0
         # Remove html content from paragraph
-        while paragraph.__contains__("<") and count < 5000:
+        while '<' in paragraph and count < 5000:
             count += 1
-            html_removal_start = paragraph.find("<")
-            html_removal_end = paragraph.find(">", html_removal_start) + len(">")
+            html_removal_start = paragraph.find('<')
+            html_removal_end = paragraph.find('>', html_removal_start) + len('>')
             if html_removal_start > 0:
                 paragraph = paragraph[:html_removal_start] + paragraph[html_removal_end:]
             else:
                 paragraph = paragraph[html_removal_end:]
         count = 0
         # Remove codes from paragraph
-        while paragraph.__contains__("&#") and count < 1000:
+        while '&#' in paragraph and count < 1000:
             count += 1
-            code_removal_start = paragraph.find("&#")
-            code_removal_end = paragraph.find(";", code_removal_start) + len(";")
+            code_removal_start = paragraph.find('&#')
+            code_removal_end = paragraph.find(';', code_removal_start) + len(';')
             if code_removal_start > 0:
-                paragraph = paragraph[:code_removal_start] + " " + paragraph[code_removal_end:]
-                if paragraph.__contains__("  "):
-                    paragraph = paragraph[:paragraph.find("  ")] + paragraph[paragraph.find("  ") + len("  ") - 1:]
+                paragraph = paragraph[:code_removal_start] + ' ' + paragraph[code_removal_end:]
+                if '  ' in paragraph:
+                    paragraph = paragraph[:paragraph.find('  ')] + paragraph[paragraph.find('  ') + len('  ') - 1:]
             else:
                 paragraph = paragraph[code_removal_end:]
         count = 0
         # Remove commas and periods
-        while (paragraph.__contains__(",") or paragraph.__contains__(".")) and count < 1000:
+        while (',' in paragraph or '.' in paragraph) and count < 1000:
             count += 1
-            comma_removal_start = paragraph.find(",")
-            comma_removal_end = comma_removal_start + len(",")
-            period_removal_start = paragraph.find(".")
-            period_removal_end = period_removal_start + len(".")
+            comma_removal_start = paragraph.find(',')
+            comma_removal_end = comma_removal_start + len(',')
+            period_removal_start = paragraph.find('.')
+            period_removal_end = period_removal_start + len('.')
             if comma_removal_start < period_removal_start:
                 if comma_removal_start > 0:
                     paragraph = paragraph[:comma_removal_start] + paragraph[comma_removal_end:]
@@ -96,7 +96,7 @@ class Scraper:
                     paragraph = paragraph[period_removal_end:]
         count = 0
         # Goes through whole paragraph to remove any non alphabetic or space characters
-        temp_paragraph = ""
+        temp_paragraph = ''
         while count < len(paragraph):
             if paragraph[count].isalpha() or paragraph[count].isspace():
                 temp_paragraph += paragraph[count]
@@ -105,19 +105,19 @@ class Scraper:
         split_words = paragraph.split(' ')
         # Fix newline combined words
         for word in split_words:
-            if word.__contains__("\n"):
-                both_words = word.split("\n")
+            if '\n' in word:
+                both_words = word.split('\n')
                 split_words.remove(word)
-                if not STOPWORDS.__contains__(both_words[0]):
+                if both_words[0] not in STOPWORDS:
                     split_words.append(both_words[0])
-                if not STOPWORDS.__contains__(both_words[1]):
+                if both_words[1] not in STOPWORDS:
                     split_words.append(both_words[1])
         # Remove empty strings in list
-        while split_words.__contains__(''):
+        while '' in split_words:
             split_words.remove('')
         # Remove "stop words"
         for i in range(len(split_words)-1, -1, -1):
-            if STOPWORDS.__contains__(split_words[i]):
+            if split_words[i] in STOPWORDS:
                 split_words.pop(i)
         # Create frequency dictionary
         frequency_dict = {}
@@ -130,8 +130,17 @@ class Scraper:
 
         return list(frequency_dict)
 
-# print("MAIN TITLE:\t" + str(get_main_title()))
-# print("TITLES:\t" + str(get_titles()))
+    def get_hyperlinks(self, section):
+        section_start = self.wiki_text.find("<span class=\"mw-headline\" id=\"{0}\">{0}".format(section))
+        paragraph_start = self.wiki_text.find('<div', section_start) + len('<div')
+        paragraph_end = self.wiki_text.find('<h2', paragraph_start)
+        paragraph = self.wiki_text[paragraph_start:paragraph_end]
 
+        hyperlinks = []
+        while "<a href=\"" in paragraph:
+            link_begin_index = paragraph.find("<a href=\"") + len("<a href=\"")
+            link_end_index = paragraph.find("\"", link_begin_index)
+            hyperlinks.append(paragraph[link_begin_index:link_end_index])
+            paragraph = paragraph[link_end_index:]
 
-# print("\n-----TEXT------\n\n" + wiki_request.text)
+        return hyperlinks

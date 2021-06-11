@@ -37,7 +37,7 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
                             Five Frequent Words Per Sub Section
                             </button>
                         </h2>
@@ -49,6 +49,29 @@
                                     <p class="card-text">
                                         {% for word in freqwords_per_subtitle[subtitle] %}
                                         <span class="badge bg-secondary text-light">{{ word }}</span>
+                                        {% endfor %}
+                                    </p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                            Hyperlinks Per Sub Section
+                            </button>
+                        </h2>
+                        <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushHyperlinks">
+                            <div class="accordion-body">
+                                {% for subtitle in subtitles %}
+                                <div class="card text-dark bg-light mb-3" style="padding: 0 10px 10px 10px;">
+                                    <h5 class="card-body">{{ subtitle }}</h5>
+                                    <p class="card-text">
+                                        {% for hyperlink in hyperlinks_per_subtitle[subtitle] %}
+                                        <a class="text-reset fw-bold" href="https://en.wikipedia.org/{{ hyperlink }}" style="text-decoration: none;">
+                                            <span class="badge bg-secondary text-light">{{ hyperlink }}</span>
+                                        </a>
                                         {% endfor %}
                                     </p>
                                 </div>

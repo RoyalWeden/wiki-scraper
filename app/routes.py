@@ -19,10 +19,13 @@ def scraped():
     scraped_title = website_scraper.get_main_title() + " | Wiki Scraper"
     subtitles = website_scraper.get_titles()
     freqwords_per_subtitle = {subtitle: website_scraper.find_most_frequent_words(subtitle)[:5] for subtitle in subtitles}
+    hyperlinks_per_subtitle = {subtitle: website_scraper.get_hyperlinks(subtitle) for subtitle in subtitles}
+
     return render_template('scraped.html',
                             scraped_title=scraped_title,
                             subtitles=subtitles,
-                            freqwords_per_subtitle=freqwords_per_subtitle)
+                            freqwords_per_subtitle=freqwords_per_subtitle,
+                            hyperlinks_per_subtitle=hyperlinks_per_subtitle)
 
 @app.route('/<wiki>')
 def quick_scraped(wiki):
@@ -38,13 +41,14 @@ def api_phrase():
     if 'phrase' in request.args:
         phrase = request.args['phrase']
     else:
-        return "Error: No phrase field provided. Please specify a phrase."
+        return jsonify({'error' : "Wikipedia phrase not found"})
 
     api_scraper = Scraper(phrase)
     results = {
         'title': api_scraper.get_main_title(),
         'subtitles': api_scraper.get_titles(),
         'freq_words': {subtitle: api_scraper.find_most_frequent_words(subtitle) for subtitle in api_scraper.get_titles()},
+        'hyperlinks': {subtitle: api_scraper.get_hyperlinks(subtitle) for subtitle in api_scraper.get_titles()}
     }
 
     return jsonify(results)
